@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container" style="padding: 20px 0 0 0">
+        <form action="">
+            <div class="general-row"> </div>
+            <br>
+            <div class="row">
+                <div class="col-2">
+                    <a class="btn btn-success addMilRow">Add+</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" ></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var counter = 0;
+        var html =  '<div class="form-group">'+
+                '<div class="row">'+
+                    '<div class="col-2">'+
+                        '<input type="text" value="0" name="minMil'+counter+'" class="form-control" disabled>'+
+                    '</div>'+
+                    '<div class="col-2">'+
+                        '<input type="text" name="maxMil'+counter+'" class="form-control" placeholder="Max Mil">'+
+                    '</div>'+
+                    '<div class="col-2">'+
+                        '<input type="text" name="priceMil'+counter+'" class="form-control" placeholder="Mil Price">'+
+                    '</div>'+
+                '</div>'+
+             '</div>';
+            $('.general-row').append(html);
+        $('.addMilRow').on('click', function(){
+            var maxMilInput = $('.row').find($("input[name=maxMil"+counter+"]"));
+            var minMilInput = $('.row').find($("input[name=minMil"+counter+"]"));
+            var priceMilInput = $('.row').find($("input[name=priceMil"+counter+"]"));
+            if(maxMilInput.val() == '')
+            {
+                maxMilInput.removeAttr('style');
+                maxMilInput.closest('div').find('small').remove();
+                maxMilInput.css({'border-color': 'orange'});
+                maxMilInput.closest('div').append('<small id="emailHelp" class="form-text text-muted"><font color="orange">Accepted bigger than Min Mil</font></small>');
+                maxMilInput.attr('placeholder', $("input[name=minMil"+counter+"]").val()+'^');
+            }
+            else
+            {
+                if($("input[name=priceMil"+counter+"]").val() == '')
+                {
+                    maxMilInput.removeAttr('style');
+                    maxMilInput.closest('div').find('small').remove();
+                    priceMilInput.removeAttr('style');
+                    priceMilInput.closest('div').find('small').remove();
+                    priceMilInput.css({'border-color': 'red'});
+                    priceMilInput.closest('div').append('<small id="emailHelp" class="form-text text-muted"><font color="red">Can\'t be empty</font></small>');
+                }
+                else
+                {
+                    var a = maxMilInput.val(); var b = minMilInput.val();
+                    if(parseInt(a) <= parseInt(b))
+                    {
+                        maxMilInput.removeAttr('style');
+                        maxMilInput.closest('div').find('small').remove();
+                        priceMilInput.removeAttr('style');
+                        priceMilInput.closest('div').find('small').remove();
+                        maxMilInput.removeClass('is-invalid');
+                        maxMilInput.closest('div').find('div.invalid-feedback').remove();
+                        maxMilInput.addClass('is-invalid');
+                        maxMilInput.closest('div').append('<div class="invalid-feedback">Can\'t be smaller and equal than Min Mil</div>');
+                    }
+                    else
+                    {
+                        maxMilInput.removeAttr('style');
+                        maxMilInput.closest('div').find('small').remove();
+                        priceMilInput.removeAttr('style');
+                        priceMilInput.closest('div').find('small').remove();
+                        maxMilInput.removeClass('is-invalid');
+                        maxMilInput.closest('div').find('div.invalid-feedback').remove();
+                        counter++;
+                        html='<div class="form-group">'+
+                        '<div class="row">'+
+                            '<div class="col-2">'+
+                                '<input type="text" name="minMil'+counter+'" class="form-control" disabled>'+
+                            '</div>'+
+                            '<div class="col-2">'+
+                                '<input type="text" class="form-control" name="maxMil'+counter+'" placeholder="Max Mil">'+
+                            '</div>'+
+                            '<div class="col-2">'+
+                                '<input type="text" class="form-control" name="priceMil'+counter+'" placeholder="Mil Price">'+
+                            '</div>'+
+                            '<div class="col-2 deleteRow">'+
+                                '<a class="btn btn-danger deleteMil" name="deleteMil'+counter+'">Delete</a>'+
+                            '</div>'+
+                        '</div>'+'</div>';
+                        $('.deleteRow').html('');
+                        $('.general-row').append(html);
+                        getName(counter); 
+                    }
+                }
+            }
+        });
+        
+        function getName(counter)
+        {
+            counter--;
+            var afterMilInput = $('.row').find($("input[name=maxMil"+counter+"]"));
+            var afterPriceInput = $('.row').find($("input[name=priceMil"+counter+"]"));
+            var getVal = parseInt(afterMilInput.val());
+            afterMilInput.attr('disabled', 'disabled');
+            afterPriceInput.attr('disabled', 'disabled');
+            
+            counter++;
+            $('.row').find($("input[name=minMil"+counter+"]")).val(getVal);
+        }
+
+        $('.general-row').on('click', '.deleteMil', function(event)
+        {
+             $(this).closest('.form-group').remove();
+             $('.general-row .row .deleteRow').last().append('<a class="btn btn-danger deleteMil" name="deleteMil'+counter+'">Delete</a>');
+             counter--;
+             $('.row').find($("input[name=maxMil"+counter+"]")).removeAttr('disabled');
+             $('.row').find($("input[name=priceMil"+counter+"]")).removeAttr('disabled');
+        });
+
+        $('.general-row').on("keypress keyup blur", "input", function (event) 
+        {
+            $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+    });
+
+</script>
+
+</html>
