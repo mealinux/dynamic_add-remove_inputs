@@ -1,2 +1,2 @@
 DEMO:
-https://thealinux.github.io/dynamic_add-remove_inputs/
+https://mealinux.github.io/dynamic_add-remove_inputs/
